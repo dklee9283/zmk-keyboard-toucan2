@@ -1,17 +1,17 @@
 # ZMK config for beekeeb Toucan2 Keyboard
 
-[The beekeeb Toucan2 Keyboard](https://beekeeb.com/introducing-toucan2/) is a wireless split 42-key column‑stagger keyboard that a display and a trackpad, with an aggressive stagger on the pinky columns.
+[The beekeeb Toucan2 Keyboard](https://beekeeb.com/introducing-toucan2/) is a wireless split column‑stagger keyboard with a display and a trackpad. This fork targets the **locked 36-key** layout (outer pinky columns dropped); upstream is 42-key.
 
 # Customizations
 
-Locked Dae layout (QWERTY, Mac-primary home-row mods, NAV / SYM / FUN / ADJ, runtime WIN toggle, TPS43 tap/scroll gestures): see **[LAYOUT.md](LAYOUT.md)**.
+Locked Dae **36-key** layout (QWERTY, Mac-primary home-row mods, NAV / SYM / FUN / ADJ, runtime WIN toggle, TPS43 tap/scroll gestures): see **[LAYOUT.md](LAYOUT.md)**.
 
 - **Keymap**: [config/toucan.keymap](config/toucan.keymap)
 - **General configs**: [boards/shields/toucan/toucan_left.conf](boards/shields/toucan/toucan_left.conf) and [boards/shields/toucan/toucan_right.conf](boards/shields/toucan/toucan_right.conf)
 - **Swipe shortcuts**: the `swipe_button_mapper` node in [boards/shields/toucan/toucan.dtsi](boards/shields/toucan/toucan.dtsi)
 - **Invert scroll / trackpad settings**: the `tps43_trackpad` node in [boards/shields/toucan/toucan_right.overlay](boards/shields/toucan/toucan_right.overlay)
 
-Bluetooth: **Profile 0 = Mac**, **Profile 1 = Windows LVDI**. Tap the left outer thumb to toggle WIN mode (Cmd-style chords → Ctrl) when using the Windows host.
+Bluetooth: **Profile 0 = Mac**, **Profile 1 = Windows LVDI**. Tap the left outer thumb to toggle WIN mode (Cmd-style chords → Ctrl) when using the Windows host. NAV is layer-tap Tab; SYM is layer-tap Backspace.
 
 # License
 

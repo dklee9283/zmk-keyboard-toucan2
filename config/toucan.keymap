@@ -5,7 +5,7 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /*
- * Locked Toucan 2 keymap (QWERTY, Mac-primary).
+ * Locked Toucan 2 keymap — 36-key (3×5 + thumbs), QWERTY, Mac-primary.
  * See LAYOUT.md for layer diagrams, WIN toggle, Bluetooth profiles, and flash notes.
  *
  * Layers:
@@ -19,6 +19,8 @@
  *   7 ADJ     NAV+SYM tri-layer: BT, media, brightness, Studio, mouse fallback
  *
  * Bluetooth: Profile 0 = Mac, Profile 1 = Windows LVDI
+ *
+ * Thumbs L→R: WIN (tog) · NAV (lt Tab) · Space | Enter · SYM (lt BSPC) · FUN (mo)
  */
 
 #define BASE     0
@@ -61,10 +63,16 @@
 #define W_WDL   &kp LC(LEFT)    /* Win Ctrl word-jump */
 #define W_WDR   &kp LC(RIGHT)
 
-/* 42-key matrix positions (row-major, including thumbs 36-41). */
-#define KEYS_L 0 1 2 3 4 5 12 13 14 15 16 17 24 25 26 27 28 29 36 37 38
-#define KEYS_R 6 7 8 9 10 11 18 19 20 21 22 23 30 31 32 33 34 35 39 40 41
-#define THUMBS 36 37 38 39 40 41
+/*
+ * 36-key positions (row-major, 0–35):
+ *   0–4 / 5–9     top
+ *  10–14 / 15–19  home
+ *  20–24 / 25–29  bottom
+ *  30–35          thumbs
+ */
+#define KEYS_L 0 1 2 3 4 10 11 12 13 14 20 21 22 23 24 30 31 32
+#define KEYS_R 5 6 7 8 9 15 16 17 18 19 25 26 27 28 29 33 34 35
+#define THUMBS 30 31 32 33 34 35
 
 / {
     behaviors {
@@ -119,80 +127,80 @@
         base {
             display-name = "BASE";
             bindings = <
-                &kp TAB    &kp Q      &kp W      &kp E      &kp R      &kp T          &kp Y      &kp U      &kp I      &kp O      &kp P       &kp BSPC
-                &kp LCTRL  &hml LCTRL A &hml LALT S &hml LGUI D &hml LSHFT F &kp G      &kp H      &hmr LSHFT J &hmr LGUI K &hmr LALT L &hmr LCTRL SEMI &kp SQT
-                &kp LSHFT  &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp COMMA  &kp DOT    &kp FSLH    &kp ESC
-                                              &tog WIN  &mo NAV   &kp SPACE       &kp RET    &mo SYM   &mo FUN
+                &kp Q      &kp W      &kp E      &kp R      &kp T          &kp Y      &kp U      &kp I      &kp O      &kp P
+                &hml LCTRL A &hml LALT S &hml LGUI D &hml LSHFT F &kp G    &kp H      &hmr LSHFT J &hmr LGUI K &hmr LALT L &hmr LCTRL SEMI
+                &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp COMMA  &kp DOT    &kp FSLH
+                                   &tog WIN  &lt NAV TAB  &kp SPACE    &kp RET    &lt SYM BSPC  &mo FUN
             >;
         };
 
         nav {
             display-name = "NAV";
             bindings = <
-                &kp TAB    &kp N1     &kp N2     &kp N3     &kp N4     &kp N5         &kp N6     &kp N7     &kp N8     &kp N9     &kp N0      &kp BSPC
-                &kp ESC    &kp HOME   &kp PGDN   &kp PGUP   &kp END    &kp INS        &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  U_WDL       U_WDR
-                &trans     U_UNDO     U_CUT      U_COPY     U_PASTE    U_REDO         U_PSP      U_CMT      &trans     &trans     &trans      &trans
-                                              &trans    &trans    &trans          &trans     &trans    &trans
+                &kp N1     &kp N2     &kp N3     &kp N4     &kp N5         &kp N6     &kp N7     &kp N8     &kp N9     &kp N0
+                &kp ESC    &kp HOME   &kp PGDN   &kp PGUP   &kp END        &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &kp BSPC
+                U_UNDO     U_CUT      U_COPY     U_PASTE    U_REDO         U_PSP      U_CMT      U_WDL      U_WDR      &kp SQT
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
         sym {
             display-name = "SYM";
             bindings = <
-                &kp TAB    &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT      &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR   &kp RPAR    &kp BSPC
-                U_FIND     U_REPL     U_BORD     U_PSP      U_BOLD     U_SAVE         &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT   &kp BSLH    &kp GRAVE
-                &kp QMARK  &kp TILDE  &kp EXCL   &kp AMPS   &kp DLLR   &kp PRCNT      &kp UNDER  &kp PLUS   &kp LBRC   &kp RBRC   &kp PIPE    &kp TILDE
-                                              &trans    &trans    &trans          &trans     &trans    &trans
+                &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT      &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR   &kp RPAR
+                U_FIND     U_REPL     U_BORD     U_BOLD     U_SAVE         &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT   &kp BSLH
+                &kp QMARK  &kp TILDE  &kp EXCL   &kp AMPS   &kp DLLR       &kp UNDER  &kp PLUS   &kp LBRC   &kp RBRC   &kp PIPE
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
         fun {
             display-name = "FUN";
             bindings = <
-                &kp F1     &kp F2     &kp F3     &kp F4     &kp F5     &kp F6         &kp F7     &kp F8     &kp F9     &kp F10    &kp F11     &kp F12
-                &trans     &kp F8     &kp F4     &kp F2     &trans     &trans         &trans     &kp F2     &kp F4     &kp F8     &trans      &trans
-                &trans     &kp F1     &kp F3     &kp F5     &kp F7     &kp F9         &kp F10    &kp F11    &kp F12    &trans     &trans      &trans
-                                              &trans    &trans    &trans          &trans     &trans    &trans
+                &kp F1     &kp F2     &kp F3     &kp F4     &kp F5         &kp F6     &kp F7     &kp F8     &kp F9     &kp F10
+                &kp F8     &kp F4     &kp F2     &trans     &trans         &kp F2     &kp F4     &kp F8     &kp F11    &kp F12
+                &kp F1     &kp F3     &kp F5     &kp F7     &kp F9         &kp F10    &kp F11    &kp F12    &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
         win {
             display-name = "WIN";
             bindings = <
-                &trans     &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans      &trans
-                &trans     &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans      &trans
-                &trans     &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans      &trans
-                                              &trans    &trans    &trans          &trans     &trans    &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
         win_nav {
             display-name = "NAV-W";
             bindings = <
-                &trans     &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans      &trans
-                &trans     &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     W_WDL       W_WDR
-                &trans     W_UNDO     W_CUT      W_COPY     W_PASTE    W_REDO         W_PSP      &trans     &trans     &trans     &trans      &trans
-                                              &trans    &trans    &trans          &trans     &trans    &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                W_UNDO     W_CUT      W_COPY     W_PASTE    W_REDO         W_PSP      &trans     W_WDL      W_WDR      &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
         win_sym {
             display-name = "SYM-W";
             bindings = <
-                &trans     &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans      &trans
-                W_FIND     W_REPL     W_BORD     W_PSP      W_BOLD     W_SAVE         &trans     &trans     &trans     &trans     &trans      &trans
-                &trans     &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans      &trans
-                                              &trans    &trans    &trans          &trans     &trans    &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                W_FIND     W_REPL     W_BORD     W_BOLD     W_SAVE         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
         adj {
             display-name = "ADJ";
             bindings = <
-                &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4   &kp C_VOL_DN &kp C_MUTE &kp C_VOL_UP &kp C_BRI_DN &kp C_BRI_UP &kp BSPC
-                &studio_unlock &out OUT_USB &out OUT_BLE &trans  &trans     &tog WIN      &mkp LCLK  &mkp RCLK  &mkp MCLK  &msc SCRL_DOWN &msc SCRL_UP &trans
-                &trans     &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans      &trans
-                                              &trans    &trans    &trans          &trans     &trans    &trans
+                &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3   &bt BT_SEL 4 &kp C_VOL_DN &kp C_MUTE &kp C_VOL_UP &kp C_BRI_UP
+                &studio_unlock &out OUT_USB &out OUT_BLE &trans &tog WIN         &mkp LCLK  &mkp RCLK  &mkp MCLK  &msc SCRL_DOWN &msc SCRL_UP
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
