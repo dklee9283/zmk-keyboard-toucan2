@@ -5,6 +5,9 @@
 #include <dt-bindings/zmk/matrix_transform.h>
 #include <physical_layouts.dtsi>
 
+// Runtime WIN toggle (left outer thumb in config/toucan.keymap) swaps Cmd→Ctrl
+// on NAV/SYM edit and Excel chords. This compile flag only remaps pinch-zoom
+// and three-finger swipe OS shortcuts; leave undefined for Mac-primary firmware.
 //#define TOUCAN_WIN_MODE
 
 / {
@@ -110,14 +113,6 @@
             track-remainders;
         };
 
-        is_touching_processor:is_touching_processor {
-            compatible = "zmk,input-processor-behaviors";
-            #input-processor-cells = <0>;
-
-            codes = <INPUT_BTN_TOUCH>;      // watch for the 'touch' pseudo button
-            bindings  = <&mo 4>;            // Activate Layer 4 while held &mo 4
-        };
-
         swipe_button_mapper: swipe_button_mapper {
             compatible = "zmk,input-processor-behaviors";
             #input-processor-cells = <0>;
@@ -145,7 +140,11 @@
         compatible = "zmk,input-listener";
         status = "disabled";
         device = <&trackpad_split>;
-        input-processors = <&zip_xy_scaler 100 100>, <&zip_scroll_scaler 1 20>, <&zip_zoom_mapper>, <&is_touching_processor>, <&swipe_button_mapper>;
+        /* Tap-to-click / two-finger-tap / press-and-hold come from the TPS43
+         * driver (see toucan_right.overlay). Do not momentary-switch a key
+         * layer on touch — that used to steal thumbs for LCLK/RCLK.
+         */
+        input-processors = <&zip_xy_scaler 100 100>, <&zip_scroll_scaler 1 20>, <&zip_zoom_mapper>, <&swipe_button_mapper>;
         scroller {
             layers = <1 2>;
             input-processors = <
