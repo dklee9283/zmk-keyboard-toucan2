@@ -1,10 +1,25 @@
-# Toucan 2 locked layout (36-key)
+# Toucan 2 locked hybrid layout (36-key)
 
 QWERTY letter positions are unchanged (no Miryoku alpha rearrange). This fork
 targets the **36-key** Toucan 2 (3×5 + thumbs): outermost pinky columns are
 dropped in the matrix transform. Mac is the default OS. Firmware:
 `config/toucan.keymap` (kept in sync with `boards/shields/toucan/toucan.keymap`).
 Trackpad: Azoteq TPS43 on the right half (`boards/shields/toucan/toucan_right.overlay`).
+
+## Hybrid design (mistake-proofing)
+
+This is the **LOCKED hybrid**:
+
+| Layer | Role |
+| ----- | ---- |
+| **SYM** | Pure punctuation pack (Dae’s old map). **No F-keys. No Excel macros.** |
+| **FUN** | F-keys + Bloomberg F8/F4/F2 on home + **Excel pack** on bottom / Bold+Save on home |
+| **NAV** | Numbers, arrows, clipboard on ZXCVB (**Undo Cut Copy Paste Redo** — not Undo/Redo/Cut/Copy/Paste) |
+| **WIN** | Sticky OS flag; remaps Mac Cmd chords → Ctrl via `WIN_NAV` / `WIN_FUN` (SYM stays OS-agnostic) |
+
+Why: putting Excel on SYM caused accidental Find/Bold when reaching for punctuation.
+Punctuation lives on SYM; Excel lives on FUN; clipboard edit order on NAV matches
+physical Z X C V B.
 
 ## Thumbs (left → right)
 
@@ -47,6 +62,20 @@ RC(3,3) RC(3,4) RC(3,5)  RC(3,6) RC(3,7) RC(3,8)
 
 Physical layout attrs match those 36 positions (outer pinkies removed).
 
+## Layer index
+
+| # | Name    | Notes |
+| - | ------- | ----- |
+| 0 | BASE    | QWERTY + HRM |
+| 1 | NAV     | numbers / nav / Mac clipboard |
+| 2 | SYM     | punctuation only |
+| 3 | FUN     | F-keys + Excel pack |
+| 4 | WIN     | sticky flag (all `&trans`) |
+| 5 | WIN_NAV | NAV+WIN Cmd→Ctrl edits |
+| 6 | WIN_SYM | SYM+WIN stub (all `&trans`) |
+| 7 | WIN_FUN | FUN+WIN Cmd→Ctrl Excel |
+| 8 | ADJ     | NAV+SYM tri-layer |
+
 ## Layers
 
 ### BASE
@@ -65,40 +94,42 @@ Physical layout attrs match those 36 positions (outer pinkies removed).
 ```
  1   2   3   4   5        6   7   8   9   0
  ESC HOME PGDN PGUP END  LEFT DOWN UP RIGHT BSPC
- Undo Cut Copy Paste Redo  PSp Comment ⌥← ⌥→ '
+ Undo Cut Copy Paste Redo  PSp Comment ⌥← ⌥→ Del
       WIN  NAV  SPC     RET  SYM  FUN
 ```
+
+**ZXCVB order is Undo / Cut / Copy / Paste / Redo** (matches Z X C V B physically —
+do not rearrange to Undo/Redo/Cut/Copy/Paste).
 
 Mac chords: Undo `Cmd+Z`, Cut `Cmd+X`, Copy `Cmd+C`, Paste `Cmd+V`,
 Redo `Cmd+Shift+Z`, Paste Special `Cmd+Ctrl+V` (Excel Mac), Comment `Shift+F2`,
-word-jump `Option+←/→`.
+word-jump `Option+←/→`, Del = `DELETE`.
 
-### SYM (hold right inner thumb)
+### SYM (hold right inner thumb) — punctuation only
 
 ```
  !   @   #   $   %        ^   &   *   (   )
- Find Repl Bord Bold Save  -   =   [   ]   \
- ?   ~   !   &   $        _   +   {   }   |
+ `   !   &   $   %        -   +   =   *   '
+ ?   ~   (   )   /        [   ]   \   |   _
       WIN  NAV  SPC     RET  SYM  FUN
 ```
 
-Left home is the Excel pack (Mac): Find `Cmd+F`, Replace `Cmd+H`,
-borders `Cmd+Opt+0` (Excel Mac outline border), Bold `Cmd+B`, Save `Cmd+S`.
+Dae’s old punctuation pack. **No F-keys. No Find/Bold/Excel.**
+`*` is `ASTRK`. Apostrophe is `APOS`.
 
-Left bottom: `? ~ ! & $`. Right home: `- = [ ] \`. Right bottom: `_ + { } |`.
-`*` is `ASTRK` (not keypad).
-
-### FUN (hold right outer thumb)
+### FUN (hold right outer thumb) — F-keys + Excel
 
 ```
  F1  F2  F3  F4  F5       F6  F7  F8  F9  F10
- F8  F4  F2  _   _        F2  F4  F8  F11 F12
- F1  F3  F5  F7  F9       F10 F11 F12 _   _
+ F8  F4  F2 Bold Save     F2  F4  F8  F11 F12
+ Find Repl Bord PSp  _    F10 F11 F12  _   _
       WIN  NAV  SPC     RET  SYM  FUN
 ```
 
-`_` = `&trans`. Home row puts Bloomberg-priority **F8 / F4 / F2** on `A S D`
-and `H J K`, with **F11 / F12** on the right home outer columns.
+Home row: Bloomberg-priority **F8 / F4 / F2** on `A S D` and `H J K`, plus
+**Bold / Save** on left home outer, **F11 / F12** on right home outer.
+Bottom left Excel pack (Mac): Find `Cmd+F`, Replace `Cmd+H`,
+borders `Cmd+Opt+0`, Paste Special `Cmd+Ctrl+V`. `_` = `&trans`.
 
 ### ADJ (NAV + SYM)
 
@@ -115,9 +146,9 @@ and `H J K`, with **F11 / F12** on the right home outer columns.
 
 ### WIN toggle
 
-Tap the left outer thumb. The display name becomes `WIN`. NAV/SYM letter keys
-stay the same; the **edit and Excel macros** swap `LG` (Cmd) → `LC` (Ctrl) via
-conditional layers `NAV-W` / `SYM-W`:
+Tap the left outer thumb. The display name becomes `WIN`. SYM punctuation is
+unchanged (OS-agnostic). **NAV clipboard / word-jump** and **FUN Excel** macros
+swap `LG` (Cmd) → `LC` (Ctrl) via conditional layers `NAV-W` / `FUN-W`:
 
 | Action        | Mac (default)   | WIN toggle          |
 | ------------- | --------------- | ------------------- |
@@ -127,6 +158,8 @@ conditional layers `NAV-W` / `SYM-W`:
 | Word-jump     | Option+←/→      | Ctrl+←/→            |
 | Find / Replace / Bold / Save | Cmd+F/H/B/S | Ctrl+F/H/B/S |
 | Borders       | Cmd+Opt+0       | Ctrl+&              |
+
+`WIN_SYM` is kept as an all-`&trans` stub for layer-index compatibility.
 
 Tap WIN again to return to Mac. Pair **Bluetooth profile 0** with the Mac and
 **profile 1** with the Windows LVDI machine, then select them on ADJ (top row).

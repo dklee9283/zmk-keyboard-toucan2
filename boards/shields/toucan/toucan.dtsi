@@ -6,7 +6,7 @@
 #include <physical_layouts.dtsi>
 
 // Runtime WIN toggle (left outer thumb in config/toucan.keymap) swaps Cmd→Ctrl
-// on NAV/SYM edit and Excel chords. This compile flag only remaps pinch-zoom
+// on NAV edits and FUN Excel chords. This compile flag only remaps pinch-zoom
 // and three-finger swipe OS shortcuts; leave undefined for Mac-primary firmware.
 //#define TOUCAN_WIN_MODE
 

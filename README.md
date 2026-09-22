@@ -4,14 +4,14 @@
 
 # Customizations
 
-Locked Dae **36-key** layout (QWERTY, Mac-primary home-row mods, NAV / SYM / FUN / ADJ, runtime WIN toggle, TPS43 tap/scroll gestures): see **[LAYOUT.md](LAYOUT.md)**.
+Locked Dae **36-key hybrid** layout (QWERTY, Mac-primary HRM, SYM=punctuation / FUN=F-keys+Excel, NAV ZXCVB clipboard, WIN→WIN_NAV/WIN_FUN, TPS43 gestures): see **[LAYOUT.md](LAYOUT.md)**.
 
 - **Keymap**: [config/toucan.keymap](config/toucan.keymap)
 - **General configs**: [boards/shields/toucan/toucan_left.conf](boards/shields/toucan/toucan_left.conf) and [boards/shields/toucan/toucan_right.conf](boards/shields/toucan/toucan_right.conf)
 - **Swipe shortcuts**: the `swipe_button_mapper` node in [boards/shields/toucan/toucan.dtsi](boards/shields/toucan/toucan.dtsi)
 - **Invert scroll / trackpad settings**: the `tps43_trackpad` node in [boards/shields/toucan/toucan_right.overlay](boards/shields/toucan/toucan_right.overlay)
 
-Bluetooth: **Profile 0 = Mac**, **Profile 1 = Windows LVDI**. Tap the left outer thumb to toggle WIN mode (Cmd-style chords → Ctrl) when using the Windows host. NAV is layer-tap Tab; SYM is layer-tap Backspace.
+Bluetooth: **Profile 0 = Mac**, **Profile 1 = Windows LVDI**. Tap the left outer thumb to toggle WIN mode (Cmd-style chords → Ctrl on NAV/FUN) when using the Windows host. NAV is layer-tap Tab; SYM is layer-tap Backspace; Excel macros live on FUN.
 
 # License
 

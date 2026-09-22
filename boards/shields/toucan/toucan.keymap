@@ -5,18 +5,19 @@
 #include <dt-bindings/zmk/pointing.h>
 
 /*
- * Locked Toucan 2 keymap — 36-key (3×5 + thumbs), QWERTY, Mac-primary.
+ * Locked Toucan 2 hybrid keymap — 36-key (3×5 + thumbs), QWERTY, Mac-primary.
  * See LAYOUT.md for layer diagrams, WIN toggle, Bluetooth profiles, and flash notes.
  *
  * Layers:
- *   0 BASE    QWERTY + home-row mods
- *   1 NAV     numbers, arrows/word-jump, Mac clipboard
- *   2 SYM     shifted numbers, punctuation, Mac Excel pack
- *   3 FUN     F1–F12 (Bloomberg F2/F4/F8 on home row)
- *   4 WIN     sticky OS flag (display shows WIN); chords stay Mac until NAV/SYM
- *   5 WIN_NAV NAV + WIN: Cmd→Ctrl clipboard / Ctrl-word-jump
- *   6 WIN_SYM SYM + WIN: Cmd→Ctrl Excel pack
- *   7 ADJ     NAV+SYM tri-layer: BT, media, brightness, Studio, mouse fallback
+ *   0 BASE     QWERTY + home-row mods
+ *   1 NAV      numbers, arrows/word-jump, Mac clipboard (ZXCVB order)
+ *   2 SYM      Dae old punctuation pack (no F-keys, no Excel)
+ *   3 FUN      F-keys + Bloomberg home + Excel pack on bottom
+ *   4 WIN      sticky OS flag (display shows WIN); chords stay Mac until NAV/FUN
+ *   5 WIN_NAV  NAV + WIN: Cmd→Ctrl clipboard / Ctrl-word-jump
+ *   6 WIN_SYM  SYM + WIN: stub (&trans; punctuation is OS-agnostic)
+ *   7 WIN_FUN  FUN + WIN: Cmd→Ctrl Excel pack on FUN
+ *   8 ADJ      NAV+SYM tri-layer: BT, media, brightness, Studio, mouse fallback
  *
  * Bluetooth: Profile 0 = Mac, Profile 1 = Windows LVDI
  *
@@ -30,7 +31,8 @@
 #define WIN      4
 #define WIN_NAV  5
 #define WIN_SYM  6
-#define ADJ      7
+#define WIN_FUN  7
+#define ADJ      8
 
 /* Mac (default) edit / Excel chords */
 #define U_UNDO  &kp LG(Z)
@@ -48,7 +50,7 @@
 #define U_WDL   &kp LA(LEFT)    /* Mac Option word-jump */
 #define U_WDR   &kp LA(RIGHT)
 
-/* Windows LVDI variants (WIN toggle + NAV/SYM). Same physical positions. */
+/* Windows LVDI variants (WIN toggle + NAV/FUN). Same physical positions. */
 #define W_UNDO  &kp LC(Z)
 #define W_CUT   &kp LC(X)
 #define W_COPY  &kp LC(C)
@@ -119,6 +121,11 @@
             if-layers = <SYM WIN>;
             then-layer = <WIN_SYM>;
         };
+
+        win_fun_layer {
+            if-layers = <FUN WIN>;
+            then-layer = <WIN_FUN>;
+        };
     };
 
     keymap {
@@ -139,7 +146,7 @@
             bindings = <
                 &kp N1     &kp N2     &kp N3     &kp N4     &kp N5         &kp N6     &kp N7     &kp N8     &kp N9     &kp N0
                 &kp ESC    &kp HOME   &kp PGDN   &kp PGUP   &kp END        &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &kp BSPC
-                U_UNDO     U_CUT      U_COPY     U_PASTE    U_REDO         U_PSP      U_CMT      U_WDL      U_WDR      &kp SQT
+                U_UNDO     U_CUT      U_COPY     U_PASTE    U_REDO         U_PSP      U_CMT      U_WDL      U_WDR      &kp DELETE
                                    &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
@@ -148,8 +155,8 @@
             display-name = "SYM";
             bindings = <
                 &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT      &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR   &kp RPAR
-                U_FIND     U_REPL     U_BORD     U_BOLD     U_SAVE         &kp MINUS  &kp EQUAL  &kp LBKT   &kp RBKT   &kp BSLH
-                &kp QMARK  &kp TILDE  &kp EXCL   &kp AMPS   &kp DLLR       &kp UNDER  &kp PLUS   &kp LBRC   &kp RBRC   &kp PIPE
+                &kp GRAVE  &kp EXCL   &kp AMPS   &kp DLLR   &kp PRCNT      &kp MINUS  &kp PLUS   &kp EQUAL  &kp ASTRK  &kp APOS
+                &kp QMARK  &kp TILDE  &kp LPAR   &kp RPAR   &kp FSLH       &kp LBKT   &kp RBKT   &kp BSLH   &kp PIPE   &kp UNDER
                                    &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
@@ -158,8 +165,8 @@
             display-name = "FUN";
             bindings = <
                 &kp F1     &kp F2     &kp F3     &kp F4     &kp F5         &kp F6     &kp F7     &kp F8     &kp F9     &kp F10
-                &kp F8     &kp F4     &kp F2     &trans     &trans         &kp F2     &kp F4     &kp F8     &kp F11    &kp F12
-                &kp F1     &kp F3     &kp F5     &kp F7     &kp F9         &kp F10    &kp F11    &kp F12    &trans     &trans
+                &kp F8     &kp F4     &kp F2     U_BOLD     U_SAVE         &kp F2     &kp F4     &kp F8     &kp F11    &kp F12
+                U_FIND     U_REPL     U_BORD     U_PSP      &trans         &kp F10    &kp F11    &kp F12    &trans     &trans
                                    &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
@@ -188,8 +195,18 @@
             display-name = "SYM-W";
             bindings = <
                 &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
-                W_FIND     W_REPL     W_BORD     W_BOLD     W_SAVE         &trans     &trans     &trans     &trans     &trans
                 &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
+            >;
+        };
+
+        win_fun {
+            display-name = "FUN-W";
+            bindings = <
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     W_BOLD     W_SAVE         &trans     &trans     &trans     &trans     &trans
+                W_FIND     W_REPL     W_BORD     W_PSP      &trans         &trans     &trans     &trans     &trans     &trans
                                    &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
