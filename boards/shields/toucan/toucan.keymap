@@ -4,17 +4,129 @@
 #include <dt-bindings/zmk/outputs.h>
 #include <dt-bindings/zmk/pointing.h>
 
-#define BASE 0
-#define NAV  1
-#define SYM  2
-#define ADJ  3
+/*
+ * Locked Toucan 2 hybrid keymap — 36-key (3×5 + thumbs), QWERTY, Mac-primary.
+ * See LAYOUT.md for layer diagrams, WIN toggle, Bluetooth profiles, and flash notes.
+ *
+ * Layers:
+ *   0 BASE     QWERTY + home-row mods
+ *   1 NAV      numbers, arrows/word-jump, Mac clipboard (ZXCVB order)
+ *   2 SYM      Dae old punctuation pack (no F-keys, no Excel)
+ *   3 FUN      F-keys + Bloomberg home + Excel pack on bottom
+ *   4 WIN      sticky OS flag (display shows WIN); chords stay Mac until NAV/FUN
+ *   5 WIN_NAV  NAV + WIN: Cmd→Ctrl clipboard / Ctrl-word-jump
+ *   6 WIN_SYM  SYM + WIN: stub (&trans; punctuation is OS-agnostic)
+ *   7 WIN_FUN  FUN + WIN: Cmd→Ctrl Excel pack on FUN
+ *   8 ADJ      NAV+SYM tri-layer: BT, media, brightness, Studio, mouse fallback
+ *
+ * Bluetooth: Profile 0 = Mac, Profile 1 = Windows LVDI
+ *
+ * Thumbs L→R: WIN (tog) · NAV (lt Tab) · Space | Enter · SYM (lt BSPC) · FUN (mo)
+ */
+
+#define BASE     0
+#define NAV      1
+#define SYM      2
+#define FUN      3
+#define WIN      4
+#define WIN_NAV  5
+#define WIN_SYM  6
+#define WIN_FUN  7
+#define ADJ      8
+
+/* Mac (default) edit / Excel chords */
+#define U_UNDO  &kp LG(Z)
+#define U_CUT   &kp LG(X)
+#define U_COPY  &kp LG(C)
+#define U_PASTE &kp LG(V)
+#define U_REDO  &kp LG(LS(Z))
+#define U_PSP   &kp LG(LC(V))   /* Excel Mac Paste Special: Cmd+Ctrl+V */
+#define U_CMT   &kp LS(F2)      /* Excel comment / edit cell note */
+#define U_FIND  &kp LG(F)
+#define U_REPL  &kp LG(H)
+#define U_BORD  &kp LG(LA(N0))  /* Excel Mac outline border: Cmd+Opt+0 */
+#define U_TYPECLIP &kp LC(LA(LG(V))) /* Mac Type Clipboard into LVDI Shortcuts hotkey (Ctrl+Opt+Cmd+V) */
+#define U_BOLD  &kp LG(B)
+#define U_SAVE  &kp LG(S)
+#define U_WDL   &kp LA(LEFT)    /* Mac Option word-jump */
+#define U_WDR   &kp LA(RIGHT)
+#define U_LANG  &kp LC(SPACE)   /* Mac next input source */
+
+/* Windows LVDI variants (WIN toggle + NAV/FUN). Same physical positions. */
+#define W_UNDO  &kp LC(Z)
+#define W_CUT   &kp LC(X)
+#define W_COPY  &kp LC(C)
+#define W_PASTE &kp LC(V)
+#define W_REDO  &kp LC(LS(Z))
+#define W_PSP   &kp LC(LA(V))   /* Excel Win Paste Special: Ctrl+Alt+V */
+#define W_FIND  &kp LC(F)
+#define W_REPL  &kp LC(H)
+#define W_BORD  &kp LC(AMPS)    /* Excel Win outline border: Ctrl+& */
+#define W_BOLD  &kp LC(B)
+#define W_SAVE  &kp LC(S)
+#define W_WDL   &kp LC(LEFT)    /* Win Ctrl word-jump */
+#define W_WDR   &kp LC(RIGHT)
+
+/*
+ * 36-key positions (row-major, 0–35):
+ *   0–4 / 5–9     top
+ *  10–14 / 15–19  home
+ *  20–24 / 25–29  bottom
+ *  30–35          thumbs
+ */
+#define KEYS_L 0 1 2 3 4 10 11 12 13 14 20 21 22 23 24 30 31 32
+#define KEYS_R 5 6 7 8 9 15 16 17 18 19 25 26 27 28 29 33 34 35
+#define THUMBS 30 31 32 33 34 35
 
 / {
+    behaviors {
+        /* Forgiving HRM: tap-preferred, long tapping-term, positional opposite-hand hold. */
+        hml: homerow_mods_left {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            quick-tap-ms = <180>;
+            require-prior-idle-ms = <175>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <KEYS_R THUMBS>;
+            hold-trigger-on-release;
+        };
+
+        hmr: homerow_mods_right {
+            compatible = "zmk,behavior-hold-tap";
+            #binding-cells = <2>;
+            flavor = "tap-preferred";
+            tapping-term-ms = <300>;
+            quick-tap-ms = <180>;
+            require-prior-idle-ms = <175>;
+            bindings = <&kp>, <&kp>;
+            hold-trigger-key-positions = <KEYS_L THUMBS>;
+            hold-trigger-on-release;
+        };
+    };
+
     conditional_layers {
         compatible = "zmk,conditional-layers";
+
         tri_layer {
-            if-layers = <1 2>;
-            then-layer = <3>;
+            if-layers = <NAV SYM>;
+            then-layer = <ADJ>;
+        };
+
+        win_nav_layer {
+            if-layers = <NAV WIN>;
+            then-layer = <WIN_NAV>;
+        };
+
+        win_sym_layer {
+            if-layers = <SYM WIN>;
+            then-layer = <WIN_SYM>;
+        };
+
+        win_fun_layer {
+            if-layers = <FUN WIN>;
+            then-layer = <WIN_FUN>;
         };
     };
 
@@ -24,59 +136,95 @@
         base {
             display-name = "BASE";
             bindings = <
-                &kp TAB   &kp Q &kp W &kp E &kp R &kp T   &kp Y &kp U  &kp I     &kp O   &kp P    &kp BSPC
-                &kp LCTRL &kp A &kp S &kp D &kp F &kp G   &kp H &kp J  &kp K     &kp L   &kp SEMI &kp SQT
-                &kp LSHFT &kp Z &kp X &kp C &kp V &kp B   &kp N &kp M  &kp COMMA &kp DOT &kp FSLH &kp ESC
-                                &kp LGUI &mo 1 &kp SPACE   &kp RET &mo 2 &kp RALT
+                &kp Q      &kp W      &kp E      &kp R      &kp T          &kp Y      &kp U      &kp I      &kp O      &kp P
+                &hml LCTRL A &hml LALT S &hml LGUI D &hml LSHFT F &kp G    &kp H      &hmr LSHFT J &hmr LGUI K &hmr LALT L &hmr LCTRL SEMI
+                &kp Z      &kp X      &kp C      &kp V      &kp B          &kp N      &kp M      &kp COMMA  &kp DOT    &kp FSLH
+                                   &tog WIN  &lt NAV TAB  &kp SPACE    &kp RET    &lt SYM BSPC  &mo FUN
             >;
         };
 
         nav {
             display-name = "NAV";
             bindings = <
-                &kp TAB     &kp N1          &kp N2       &kp N3       &kp N4       &kp N5         &kp N6   &kp N7   &kp N8 &kp N9    &kp N0 &kp BSPC
-                &bt BT_CLR  &bt BT_SEL 0    &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3 &bt BT_SEL 4   &kp LEFT &kp DOWN &kp UP &kp RIGHT &trans &trans
-                &kp LSHFT   &studio_unlock  &trans       &trans       &trans       &trans         &trans   &trans   &trans &trans    &trans &trans
-                                                &kp LGUI     &trans       &kp SPACE      &kp RET  &trans   &kp RALT
+                &kp N1     &kp N2     &kp N3     &kp N4     &kp N5         &kp N6     &kp N7     &kp N8     &kp N9     &kp N0
+                &kp ESC    &kp HOME   &kp PGDN   &kp PGUP   &kp END        &kp LEFT   &kp DOWN   &kp UP     &kp RIGHT  &kp BSPC
+                U_UNDO     U_CUT      U_COPY     U_PASTE    U_REDO         U_PSP      U_CMT      U_WDL      U_WDR      &kp DELETE
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
         sym {
             display-name = "SYM";
             bindings = <
-                &kp TAB   &kp EXCL &kp AT &kp HASH &kp DLLR &kp PRCNT   &kp CARET &kp AMPS  &kp KP_MULTIPLY &kp LPAR &kp RPAR &kp BSPC
-                &kp LCTRL &trans   &trans &trans   &trans   &trans      &kp MINUS &kp EQUAL &kp LBKT        &kp RBKT &kp BSLH &kp GRAVE
-                &kp LSHFT &trans   &trans &trans   &trans   &trans      &kp UNDER &kp PLUS  &kp LBRC        &kp RBRC &kp PIPE &kp TILDE
-                                          &kp LGUI &trans   &kp SPACE   &kp RET   &trans    &kp RALT
+                &kp EXCL   &kp AT     &kp HASH   &kp DLLR   &kp PRCNT      &kp CARET  &kp AMPS   &kp ASTRK  &kp LPAR   &kp RPAR
+                &kp GRAVE  &kp EXCL   &kp AMPS   &kp DLLR   &kp PRCNT      &kp MINUS  &kp PLUS   &kp EQUAL  &kp ASTRK  &kp APOS
+                &kp QMARK  &kp TILDE  &kp LPAR   &kp RPAR   &kp FSLH       &kp LBKT   &kp RBKT   &kp BSLH   &kp PIPE   &kp UNDER
+                                   &trans     &trans      &trans       &trans     &trans       &trans
+            >;
+        };
+
+        fun {
+            display-name = "FUN";
+            bindings = <
+                &kp F1     &kp F2     &kp F3     &kp F4     &kp F5         &kp F6     &kp F7     &kp F8     &kp F9     &kp F10
+                &kp F8     &kp F4     &kp F2     U_BOLD     U_SAVE         &kp F2     &kp F4     &kp F8     &kp F11    &kp F12
+                U_FIND     U_REPL     U_BORD     U_PSP      U_TYPECLIP     &kp F10    &kp F11    &kp F12    &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
+            >;
+        };
+
+        win {
+            display-name = "WIN";
+            bindings = <
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
+            >;
+        };
+
+        win_nav {
+            display-name = "NAV-W";
+            bindings = <
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                W_UNDO     W_CUT      W_COPY     W_PASTE    W_REDO         W_PSP      &trans     W_WDL      W_WDR      &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
+            >;
+        };
+
+        win_sym {
+            display-name = "SYM-W";
+            bindings = <
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
+            >;
+        };
+
+        win_fun {
+            display-name = "FUN-W";
+            bindings = <
+                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                &trans     &trans     &trans     W_BOLD     W_SAVE         &trans     &trans     &trans     &trans     &trans
+                W_FIND     W_REPL     W_BORD     W_PSP      &trans         &trans     &trans     &trans     &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
         adj {
             display-name = "ADJ";
             bindings = <
-                &mo TAB   &trans &kp F7 &kp F8 &kp F9 &kp F12   &kp C_VOL_DN &kp C_MUTE  &kp C_VOL_UP &trans &trans &kp BSPC
-                &kp LCTRL &trans &kp F4 &kp F5 &kp F6 &kp F11   &trans       &trans      &trans       &trans &trans &trans
-                &bt LSHFT &trans &kp F1 &kp F2 &kp F3 &kp F10   &trans       &trans      &trans       &trans &trans &trans
-                                   &kp LGUI &mo NAV &kp SPACE   &kp RET &mo 2 &kp RALT
+                &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3   &bt BT_SEL 4 &kp C_VOL_DN &kp C_MUTE &kp C_VOL_UP &kp C_BRI_UP
+                &studio_unlock &out OUT_USB &out OUT_BLE &trans &tog WIN         &mkp LCLK  &mkp RCLK  &mkp MCLK  &msc SCRL_DOWN &msc SCRL_UP
+                U_LANG     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                                   &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
 
-        mouse {
-            display-name = "MOU";
-            bindings = <
-                &trans &trans &trans &trans &trans &trans           &trans &trans &trans &trans &trans &trans
-                &trans &trans &trans &trans &trans &trans           &trans &trans &trans &trans &trans &trans
-                &trans &trans &trans &trans &trans &trans           &trans &trans &trans &trans &trans &trans
-                            &mkp MCLK &mkp LCLK &mkp RCLK           &mkp LCLK &mkp RCLK &mkp MCLK
-            >;
-        };
-
-        extra_2 {
-                status = "reserved";
-        };
-
-        extra_3 {
-                status = "reserved";
+        extra_studio {
+            status = "reserved";
         };
     };
 };

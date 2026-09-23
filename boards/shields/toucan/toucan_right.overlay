@@ -66,6 +66,13 @@
         filter-settings=<0x0B>;
         hold-time = <500>;
 
+        /* Locked pointing gestures (driver booleans; presence enables them):
+         *   single-tap      = left click
+         *   two-finger-tap  = right click
+         *   press-and-hold  = click-and-drag
+         *   scroll          = two-finger scroll
+         * Physical LCLK/RCLK are not on BASE thumbs; ADJ has a tiny fallback.
+         */
         zoom;
         scroll;
         two-finger-tap;
