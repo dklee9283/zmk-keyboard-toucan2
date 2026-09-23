@@ -122,26 +122,29 @@ Dae’s old punctuation pack. **No F-keys. No Find/Bold/Excel.**
 ```
  F1  F2  F3  F4  F5       F6  F7  F8  F9  F10
  F8  F4  F2 Bold Save     F2  F4  F8  F11 F12
- Find Repl Bord PSp  _    F10 F11 F12  _   _
+ Find Repl Bord PSp Clip  F10 F11 F12  _   _
       WIN  NAV  SPC     RET  SYM  FUN
 ```
 
 Home row: Bloomberg-priority **F8 / F4 / F2** on `A S D` and `H J K`, plus
 **Bold / Save** on left home outer, **F11 / F12** on right home outer.
 Bottom left Excel pack (Mac): Find `Cmd+F`, Replace `Cmd+H`,
-borders `Cmd+Opt+0`, Paste Special `Cmd+Ctrl+V`. `_` = `&trans`.
+borders `Cmd+Opt+0`, Paste Special `Cmd+Ctrl+V`, then **Type Clipboard**
+(`Clip`, `Ctrl+Opt+Cmd+V`) — the Mac Shortcuts hotkey that types the clipboard
+into LVDI. `FUN-W` leaves that slot `&trans` (no Windows remap). `_` = `&trans`.
 
 ### ADJ (NAV + SYM)
 
 ```
  CLR BT0 BT1 BT2 BT3      BT4 VOL- MUTE VOL+ BRI+
  Stu USB BLE  _  WIN      LCLK RCLK MCLK Scr↓ Scr↑
-  _   _   _   _   _        _   _   _   _   _
+ Lang _   _   _   _        _   _   _   _   _
       WIN  NAV  SPC     RET  SYM  FUN
 ```
 
 - **BT0** = Mac, **BT1** = Windows LVDI (also BT2–BT4 if you need more hosts).
 - **Stu** = ZMK Studio unlock (left half, USB).
+- Bottom-left **Lang** = Mac next input source (`Ctrl+Space`).
 - Mouse keys are fallback only.
 
 ### WIN toggle

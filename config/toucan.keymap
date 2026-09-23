@@ -45,10 +45,12 @@
 #define U_FIND  &kp LG(F)
 #define U_REPL  &kp LG(H)
 #define U_BORD  &kp LG(LA(N0))  /* Excel Mac outline border: Cmd+Opt+0 */
+#define U_TYPECLIP &kp LC(LA(LG(V))) /* Mac Type Clipboard into LVDI Shortcuts hotkey (Ctrl+Opt+Cmd+V) */
 #define U_BOLD  &kp LG(B)
 #define U_SAVE  &kp LG(S)
 #define U_WDL   &kp LA(LEFT)    /* Mac Option word-jump */
 #define U_WDR   &kp LA(RIGHT)
+#define U_LANG  &kp LC(SPACE)   /* Mac next input source */
 
 /* Windows LVDI variants (WIN toggle + NAV/FUN). Same physical positions. */
 #define W_UNDO  &kp LC(Z)
@@ -166,7 +168,7 @@
             bindings = <
                 &kp F1     &kp F2     &kp F3     &kp F4     &kp F5         &kp F6     &kp F7     &kp F8     &kp F9     &kp F10
                 &kp F8     &kp F4     &kp F2     U_BOLD     U_SAVE         &kp F2     &kp F4     &kp F8     &kp F11    &kp F12
-                U_FIND     U_REPL     U_BORD     U_PSP      &trans         &kp F10    &kp F11    &kp F12    &trans     &trans
+                U_FIND     U_REPL     U_BORD     U_PSP      U_TYPECLIP     &kp F10    &kp F11    &kp F12    &trans     &trans
                                    &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
@@ -216,7 +218,7 @@
             bindings = <
                 &bt BT_CLR &bt BT_SEL 0 &bt BT_SEL 1 &bt BT_SEL 2 &bt BT_SEL 3   &bt BT_SEL 4 &kp C_VOL_DN &kp C_MUTE &kp C_VOL_UP &kp C_BRI_UP
                 &studio_unlock &out OUT_USB &out OUT_BLE &trans &tog WIN         &mkp LCLK  &mkp RCLK  &mkp MCLK  &msc SCRL_DOWN &msc SCRL_UP
-                &trans     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
+                U_LANG     &trans     &trans     &trans     &trans         &trans     &trans     &trans     &trans     &trans
                                    &trans     &trans      &trans       &trans     &trans       &trans
             >;
         };
